@@ -1,6 +1,5 @@
 import requests
 import time
-import datetime
 
 def read_api_keys(filename):
     with open(filename, 'r') as file:
@@ -30,6 +29,11 @@ def claim_reward(api_key):
     }
     
     response = requests.post(url, headers=headers, data="{}")
+    
+    # Handle response encoding
+    if response.encoding is None:
+        response.encoding = 'utf-8'  # default to utf-8 if encoding is not provided
+
     return response.status_code, response.text
 
 def countdown_timer(seconds):
