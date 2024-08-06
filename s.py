@@ -1,6 +1,7 @@
 import requests
 import time
 import datetime
+from dateutil import parser
 
 def read_api_keys(filename):
     with open(filename, 'r') as file:
@@ -66,10 +67,11 @@ def countdown_timer(seconds):
 
 def format_datetime(datetime_str):
     """Format ISO 8601 datetime string to a more readable format."""
-    if datetime_str:
-        dt = datetime.datetime.fromisoformat(datetime_str.replace("Z", "+00:00"))
+    try:
+        dt = parser.isoparse(datetime_str)
         return dt.strftime('%Y-%m-%d %H:%M:%S')
-    return "N/A"
+    except (ValueError, TypeError):
+        return "N/A"
 
 def print_account_details(details):
     print("Account Details:")
