@@ -32,7 +32,7 @@ def login(api_key_payload):
     response.encoding = 'utf-8' if response.encoding is None else response.encoding
     return response.status_code, response.json()
 
-def claim_reward(api_key):
+def claim_reward(access_token):
     url = "https://clicker.game-bomb.ru/claim"
     headers = {
         "Accept": "application/json, text/plain, */*",
@@ -52,14 +52,14 @@ def claim_reward(api_key):
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-site",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0",
-        "X-Api-Key": api_key
+        "X-Api-Key": access_token
     }
     
     response = requests.post(url, headers=headers, data="{}")
     response.encoding = 'utf-8' if response.encoding is None else response.encoding
     return response.status_code, response.json()
 
-def get_channel_tasks(api_key):
+def get_channel_tasks(access_token):
     url = "https://clicker.game-bomb.ru/channels"
     headers = {
         "Accept": "application/json, text/plain, */*",
@@ -78,14 +78,14 @@ def get_channel_tasks(api_key):
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-site",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0",
-        "X-Api-Key": api_key
+        "X-Api-Key": access_token
     }
     
     response = requests.get(url, headers=headers)
     response.encoding = 'utf-8' if response.encoding is None else response.encoding
     return response.status_code, response.json()
 
-def get_sponsor_tasks(api_key):
+def get_sponsor_tasks(access_token):
     url = "https://clicker.game-bomb.ru/sponsors"
     headers = {
         "Accept": "application/json, text/plain, */*",
@@ -104,14 +104,14 @@ def get_sponsor_tasks(api_key):
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-site",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0",
-        "X-Api-Key": api_key
+        "X-Api-Key": access_token
     }
     
     response = requests.get(url, headers=headers)
     response.encoding = 'utf-8' if response.encoding is None else response.encoding
     return response.status_code, response.json()
 
-def claim_task_reward(api_key, task_type, task_id):
+def claim_task_reward(access_token, task_type, task_id):
     url = f"https://clicker.game-bomb.ru/{task_type}/{task_id}"
     headers = {
         "Accept": "application/json, text/plain, */*",
@@ -130,7 +130,7 @@ def claim_task_reward(api_key, task_type, task_id):
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-site",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0",
-        "X-Api-Key": api_key
+        "X-Api-Key": access_token
     }
     
     response = requests.post(url, headers=headers)
