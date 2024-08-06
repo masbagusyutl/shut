@@ -1,140 +1,58 @@
 import requests
 import time
-import json
+import datetime
 
 def read_api_keys(filename):
     with open(filename, 'r') as file:
         return [line.strip() for line in file.readlines()]
 
-def login(api_key_payload):
+def login(payload):
     url = "https://clicker.game-bomb.ru/authorize"
     headers = {
         "Accept": "application/json, text/plain, */*",
         "Accept-Encoding": "gzip, deflate, br, zstd",
         "Accept-Language": "en-GB,en;q=0.9,en-US;q=0.8",
-        "Cache-Control": "no-cache",
-        "Content-Length": "358",
         "Content-Type": "application/x-www-form-urlencoded",
         "Origin": "https://app.game-bomb.ru",
-        "Pragma": "no-cache",
-        "Priority": "u=1, i",
-        "Referer": "https://app.game-bomb.ru/",
-        "Sec-Ch-Ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Microsoft Edge\";v=\"126\", \"Microsoft Edge WebView2\";v=\"126\"",
-        "Sec-Ch-Ua-Mobile": "?0",
-        "Sec-Ch-Ua-Platform": "\"Windows\"",
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-site",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"
     }
-    
-    response = requests.post(url, headers=headers, data=api_key_payload)
-    response.encoding = 'utf-8' if response.encoding is None else response.encoding
+    response = requests.post(url, headers=headers, data=payload)
     return response.status_code, response.json()
 
-def claim_reward(access_token):
-    url = "https://clicker.game-bomb.ru/claim"
-    headers = {
-        "Accept": "application/json, text/plain, */*",
-        "Accept-Encoding": "gzip, deflate, br, zstd",
-        "Accept-Language": "en-GB,en;q=0.9,en-US;q=0.8",
-        "Cache-Control": "no-cache",
-        "Content-Length": "2",
-        "Content-Type": "application/json",
-        "Origin": "https://app.game-bomb.ru",
-        "Pragma": "no-cache",
-        "Priority": "u=1, i",
-        "Referer": "https://app.game-bomb.ru/",
-        "Sec-Ch-Ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Microsoft Edge\";v=\"126\", \"Microsoft Edge WebView2\";v=\"126\"",
-        "Sec-Ch-Ua-Mobile": "?0",
-        "Sec-Ch-Ua-Platform": "\"Windows\"",
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-site",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0",
-        "X-Api-Key": access_token
-    }
-    
-    response = requests.post(url, headers=headers, data="{}")
-    response.encoding = 'utf-8' if response.encoding is None else response.encoding
-    return response.status_code, response.json()
-
-def get_channel_tasks(access_token):
+def get_channel_tasks(api_key):
     url = "https://clicker.game-bomb.ru/channels"
     headers = {
         "Accept": "application/json, text/plain, */*",
-        "Accept-Encoding": "gzip, deflate, br, zstd",
-        "Accept-Language": "en-GB,en;q=0.9,en-US;q=0.8",
-        "Cache-Control": "no-cache",
-        "Content-Type": "application/json",
-        "Origin": "https://app.game-bomb.ru",
-        "Pragma": "no-cache",
-        "Priority": "u=1, i",
-        "Referer": "https://app.game-bomb.ru/",
-        "Sec-Ch-Ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Microsoft Edge\";v=\"126\", \"Microsoft Edge WebView2\";v=\"126\"",
-        "Sec-Ch-Ua-Mobile": "?0",
-        "Sec-Ch-Ua-Platform": "\"Windows\"",
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-site",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0",
-        "X-Api-Key": access_token
+        "X-Api-Key": api_key
     }
-    
     response = requests.get(url, headers=headers)
-    response.encoding = 'utf-8' if response.encoding is None else response.encoding
     return response.status_code, response.json()
 
-def get_sponsor_tasks(access_token):
+def get_sponsor_tasks(api_key):
     url = "https://clicker.game-bomb.ru/sponsors"
     headers = {
         "Accept": "application/json, text/plain, */*",
-        "Accept-Encoding": "gzip, deflate, br, zstd",
-        "Accept-Language": "en-GB,en;q=0.9,en-US;q=0.8",
-        "Cache-Control": "no-cache",
-        "Content-Type": "application/json",
-        "Origin": "https://app.game-bomb.ru",
-        "Pragma": "no-cache",
-        "Priority": "u=1, i",
-        "Referer": "https://app.game-bomb.ru/",
-        "Sec-Ch-Ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Microsoft Edge\";v=\"126\", \"Microsoft Edge WebView2\";v=\"126\"",
-        "Sec-Ch-Ua-Mobile": "?0",
-        "Sec-Ch-Ua-Platform": "\"Windows\"",
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-site",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0",
-        "X-Api-Key": access_token
+        "X-Api-Key": api_key
     }
-    
     response = requests.get(url, headers=headers)
-    response.encoding = 'utf-8' if response.encoding is None else response.encoding
     return response.status_code, response.json()
 
-def claim_task_reward(access_token, task_type, task_id):
+def claim_task_reward(api_key, task_type, task_id):
     url = f"https://clicker.game-bomb.ru/{task_type}/{task_id}"
     headers = {
         "Accept": "application/json, text/plain, */*",
-        "Accept-Encoding": "gzip, deflate, br, zstd",
-        "Accept-Language": "en-GB,en;q=0.9,en-US;q=0.8",
-        "Cache-Control": "no-cache",
-        "Content-Type": "application/json",
-        "Origin": "https://app.game-bomb.ru",
-        "Pragma": "no-cache",
-        "Priority": "u=1, i",
-        "Referer": "https://app.game-bomb.ru/",
-        "Sec-Ch-Ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Microsoft Edge\";v=\"126\", \"Microsoft Edge WebView2\";v=\"126\"",
-        "Sec-Ch-Ua-Mobile": "?0",
-        "Sec-Ch-Ua-Platform": "\"Windows\"",
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-site",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0",
-        "X-Api-Key": access_token
+        "X-Api-Key": api_key
     }
-    
     response = requests.post(url, headers=headers)
-    response.encoding = 'utf-8' if response.encoding is None else response.encoding
+    return response.status_code, response.json()
+
+def claim_reward(api_key):
+    url = "https://clicker.game-bomb.ru/claim"
+    headers = {
+        "Accept": "application/json, text/plain, */*",
+        "X-Api-Key": api_key
+    }
+    response = requests.post(url, headers=headers, data="{}")
     return response.status_code, response.json()
 
 def countdown_timer(seconds):
@@ -146,22 +64,35 @@ def countdown_timer(seconds):
         seconds -= 1
     print("\nCountdown finished. Restarting tasks...\n")
 
+def format_datetime(datetime_str):
+    """Format ISO 8601 datetime string to a more readable format."""
+    if datetime_str:
+        dt = datetime.datetime.fromisoformat(datetime_str.replace("Z", "+00:00"))
+        return dt.strftime('%Y-%m-%d %H:%M:%S')
+    return "N/A"
+
 def print_account_details(details):
-    print("\nAccount Details:")
-    print(f"Name: {details.get('first_name')}")
+    print("Account Details:")
+    print(f"First Name: {details.get('first_name')}")
     print(f"Balance: {details.get('balance')}")
     print(f"Balance USD: {details.get('balance_usd')}")
     print(f"Available to Mine: {details.get('available_to_mine')}")
-    print(f"Last Mine At: {details.get('last_mine_at')}\n")
+    print(f"Last Mine At: {format_datetime(details.get('last_mine_at'))}\n")
 
 def print_task_info(title, tasks):
     print(f"{title}:")
+    is_available_false_count = 0
     for task in tasks:
-        print(f"ID: {task.get('id')}")
-        print(f"Title: {task.get('title')}")
-        print(f"Reward: {task.get('reward')}")
-        print(f"Reward SHTB: {task.get('reward_shtb')}")
-        print(f"Is Available: {task.get('is_available')}\n")
+        if task.get('is_available'):
+            print(f"ID: {task.get('id')}")
+            print(f"Title: {task.get('title')}")
+            print(f"Reward: {task.get('reward')}")
+            print(f"Reward SHTB: {task.get('reward_shtb')}")
+            print(f"Is Available: {task.get('is_available')}\n")
+        else:
+            is_available_false_count += 1
+    if is_available_false_count > 0:
+        print(f"{is_available_false_count} tasks are not available and have been processed.\n")
 
 def print_reward_details(task_type, reward_response):
     print(f"{task_type.capitalize()} Task Reward:")
@@ -171,7 +102,7 @@ def print_reward_details(task_type, reward_response):
 def print_claim_reward_details(reward_response):
     print("Claim Reward Details:")
     print(f"Balance: {reward_response.get('balance')}")
-    print(f"Last Mine At: {reward_response.get('last_mine_at')}\n")
+    print(f"Last Mine At: {format_datetime(reward_response.get('last_mine_at'))}\n")
 
 def main():
     api_keys = read_api_keys('data.txt')
