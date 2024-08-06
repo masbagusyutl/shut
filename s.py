@@ -146,10 +146,38 @@ def countdown_timer(seconds):
         seconds -= 1
     print("\nCountdown finished. Restarting tasks...\n")
 
+def print_account_details(details):
+    print("\nAccount Details:")
+    print(f"Name: {details.get('first_name')}")
+    print(f"Balance: {details.get('balance')}")
+    print(f"Balance USD: {details.get('balance_usd')}")
+    print(f"Available to Mine: {details.get('available_to_mine')}")
+    print(f"Last Mine At: {details.get('last_mine_at')}\n")
+
+def print_task_info(title, tasks):
+    print(f"{title}:")
+    for task in tasks:
+        print(f"ID: {task.get('id')}")
+        print(f"Title: {task.get('title')}")
+        print(f"Reward: {task.get('reward')}")
+        print(f"Reward SHTB: {task.get('reward_shtb')}")
+        print(f"Is Available: {task.get('is_available')}\n")
+
+def print_reward_details(task_type, reward_response):
+    print(f"{task_type.capitalize()} Task Reward:")
+    print(f"New Balance: {reward_response.get('new_balance')}")
+    print(f"New Balance SHTB: {reward_response.get('new_balance_shtb')}\n")
+
+def print_claim_reward_details(reward_response):
+    print("Claim Reward Details:")
+    print(f"Balance: {reward_response.get('balance')}")
+    print(f"Last Mine At: {reward_response.get('last_mine_at')}\n")
+
 def main():
     api_keys = read_api_keys('data.txt')
     num_accounts = len(api_keys)
-    print(f"Total number of accounts: {num_accounts}")
+
+    print(f"Starting processing {num_accounts} accounts...\n")
 
     while True:
         for index, api_key_payload in enumerate(api_keys):
@@ -157,64 +185,38 @@ def main():
             status_code, login_response = login(api_key_payload)
             if status_code == 200:
                 access_token = login_response.get("access_token")
-                first_name = login_response.get("first_name")
-                balance = login_response.get("balance")
-                balance_usd = login_response.get("balance_usd")
-                available_to_mine = login_response.get("available_to_mine")
-                last_mine_at = login_response.get("last_mine_at")
-
-                print(f"Account Details - Name: {first_name}, Balance: {balance}, Balance USD: {balance_usd}, Available to Mine: {available_to_mine}, Last Mine At: {last_mine_at}")
+                print_account_details(login_response)
 
                 status_code, channel_tasks = get_channel_tasks(access_token)
                 if status_code == 200:
-                    print("Channel Tasks:")
-                    for task in channel_tasks:
-                        task_id = task.get("id")
-                        title = task.get("title")
-                        reward = task.get("reward")
-                        reward_shtb = task.get("reward_shtb")
-                        is_available = task.get("is_available")
-                        print(f"ID: {task_id}, Title: {title}, Reward: {reward}, Reward SHTB: {reward_shtb}, Is Available: {is_available}")
+                    print_task_info("Channel Tasks", channel_tasks)
 
                 status_code, sponsor_tasks = get_sponsor_tasks(access_token)
                 if status_code == 200:
-                    print("Sponsor Tasks:")
-                    for task in sponsor_tasks:
-                        task_id = task.get("id")
-                        title = task.get("title")
-                        reward = task.get("reward")
-                        reward_shtb = task.get("reward_shtb")
-                        is_available = task.get("is_available")
-                        print(f"ID: {task_id}, Title: {title}, Reward: {reward}, Reward SHTB: {reward_shtb}, Is Available: {is_available}")
+                    print_task_info("Sponsor Tasks", sponsor_tasks)
 
                 for task in channel_tasks:
                     if task.get("is_available"):
                         task_id = task.get("id")
                         status_code, reward_response = claim_task_reward(access_token, "channels", task_id)
                         if status_code == 200:
-                            new_balance = reward_response.get("new_balance")
-                            new_balance_shtb = reward_response.get("new_balance_shtb")
-                            print(f"Channel Task Reward - New Balance: {new_balance}, New Balance SHTB: {new_balance_shtb}")
-                
+                            print_reward_details("Channel", reward_response)
+
                 for task in sponsor_tasks:
                     if task.get("is_available"):
                         task_id = task.get("id")
                         status_code, reward_response = claim_task_reward(access_token, "sponsors", task_id)
                         if status_code == 200:
-                            new_balance = reward_response.get("new_balance")
-                            new_balance_shtb = reward_response.get("new_balance_shtb")
-                            print(f"Sponsor Task Reward - New Balance: {new_balance}, New Balance SHTB: {new_balance_shtb}")
+                            print_reward_details("Sponsor", reward_response)
 
                 status_code, reward_response = claim_reward(access_token)
                 if status_code == 200:
-                    balance = reward_response.get("balance")
-                    last_mine_at = reward_response.get("last_mine_at")
-                    print(f"Claim Reward - Balance: {balance}, Last Mine At: {last_mine_at}")
+                    print_claim_reward_details(reward_response)
 
             if index < num_accounts - 1:
                 print("Waiting for 5 seconds before switching to the next account...\n")
                 time.sleep(5)
-        
+
         print(f"All {num_accounts} accounts have been processed. Starting countdown for 3000 seconds...\n")
         countdown_timer(3000)
 
